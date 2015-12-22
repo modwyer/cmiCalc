@@ -1,0 +1,397 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Quick CMI Calculator</title>
+	<meta name="description" 
+		  content="Quick CMI Calculator">
+    <meta name="author" 
+          content="BestCase">
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" 
+		  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" 
+		  href="css/styles.css?v=1.0">
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+<div class="gridcontainer">
+    <div class="gridwrapper">
+        <div class="gridbox gridheader">
+            <div class="header">
+                <h1>Quick CMI Calculator</h1>
+            </div>
+        </div>
+		<!--
+        <div class="gridbox gridmenu">
+            <div class="menuitem">The Drive</div>
+            <div class="menuitem">The Walk</div>
+            <div class="menuitem">The Return</div>
+            <div class="menuitem">The End</div>
+        </div>
+		-->
+		<div class="gridbox gridmain">
+			<div class="main">
+				<form role="form">
+					<div class="form-group">
+						<label for="selState">State (select one):</label>
+							<select class="form-control state_select" 
+									id="selState"
+									onchange="CMI_CALCULATOR.state_onchange(this);">
+							<option selected="selected" 
+									value=""></option>
+							<option value="Alabama">Alabama</option>
+							<option value="Alaska">Alaska</option>
+							<option value="Arizona">Arizona</option>
+							<option value="Arkansas">Arkansas</option>
+							<option value="California">California</option>
+							<option value="Colorado">Colorado</option>
+							<option value="Connecticut">Connecticut</option>
+							<option value="Delaware">Delaware</option>
+							<option value="District of Columbia">District of Columbia</option>
+							<option value="Florida">Florida</option>
+							<option value="Georgia">Georgia</option>
+							<option value="Guam">Guam</option>
+							<option value="Hawaii">Hawaii</option>
+							<option value="Idaho">Idaho</option>
+							<option value="Illinois">Illinois</option>
+							<option value="Indiana">Indiana</option>
+							<option value="Iowa">Iowa</option>
+							<option value="Kansas">Kansas</option>
+							<option value="Kentucky">Kentucky</option>
+							<option value="Louisiana">Louisiana</option>
+							<option value="Maine">Maine</option>
+							<option value="Maryland">Maryland</option>
+							<option value="Massachusetts">Massachusetts</option>
+							<option value="Michigan">Michigan</option>
+							<option value="Minnesota">Minnesota</option>
+							<option value="Mississippi">Mississippi</option>
+							<option value="Missouri">Missouri</option>
+							<option value="Montana">Montana</option>
+							<option value="Nebraska">Nebraska</option>
+							<option value="Nevada">Nevada</option>
+							<option value="New Hampshire">New Hampshire</option>
+							<option value="New Jersey">New Jersey</option>
+							<option value="New Mexico">New Mexico</option>
+							<option value="New York">New York</option>
+							<option value="North Carolina">North Carolina</option>
+							<option value="North Dakota">North Dakota</option>
+							<option value="Ohio">Ohio</option>
+							<option value="Oklahoma">Oklahoma</option>
+							<option value="Oregon">Oregon</option>
+							<option value="Pennsylvania">Pennsylvania</option>
+							<option value="Puerto Rico">Puerto Rico</option>
+							<option value="Rhode Island">Rhode Island</option>
+							<option value="South Carolina">South Carolina</option>
+							<option value="South Dakota">South Dakota</option>
+							<option value="Tennessee">Tennessee</option>
+							<option value="Texas">Texas</option>
+							<option value="Utah">Utah</option>
+							<option value="Vermont">Vermont</option>
+							<option value="Virgin Islands">Virgin Islands</option>
+							<option value="Virginia">Virginia</option>
+							<option value="Washington">Washington</option>
+							<option value="West Virginia">West Virginia</option>
+							<option value="Wisconsin">Wisconsin</option>
+							<option value="Wyoming">Wyoming</option>
+						</select>
+						<br>
+						<label for="houseSize">Household size:</label>
+						<input type="number" 
+							   class="form-control" 
+							   id="houseSize"
+							   min="1"
+							   max="9999"
+							   onchange="CMI_CALCULATOR.house_size_change(this);">
+						<br>
+						<label for="grossInc_db">Average Gross Monthly Income (Pre-Tax) for prior six months:</label>
+						<div class="input-group">
+							<input type="number" 
+								   class="form-control" 
+								   id="grossInc_db"								   
+								   min="1"
+  								   max="999999999"
+								   data-show="tip" 
+								   title="Debtor"
+								   placeholder="Debtor"
+								   onchange="CMI_CALCULATOR.debtor_inc_change(this);">
+							<a class="calcbutton input-group-btn btn btn-default go inline btn-lg" 
+							   data-toggle="modal" 
+							   data-target="#avgIncModal" 
+							   data-show="tip" 
+							   title="Calculate Debtor's Income"
+							   onclick="AVG_CALCULATOR.set_forWho(FILERENUM.Debtor); AVG_CALCULATOR.update_modal();">Debtor's Income</a>
+						</div>
+						<br>
+						<div class="input-group">
+							<input type="number" 
+								class="form-control" 
+								id="grossInc_jdb"
+								min="1"
+								max="999999999"
+								data-show="tip" 
+								title="Joint Debtor"
+								placeholder="Joint Debtor"
+								onchange="CMI_CALCULATOR.jointdebtor_inc_change(this);">
+							<a class="calcbutton input-group-btn btn btn-default go inline btn-lg" 
+							   data-toggle="modal" 
+							   data-target="#avgIncModal" 
+							   data-show="tip" 
+							   title="Calculate Joint Debtor's Income"
+							   onclick="AVG_CALCULATOR.set_forWho(FILERENUM.JointDebtor); AVG_CALCULATOR.update_modal();">Joint Debtor's Income</a>
+						</div>
+		  
+						<!-- Average Income Calculator Modal -->
+						<div class="modal fade" 
+							 id="avgIncModal" 
+							 role="dialog">
+							<div class="modal-dialog">
+								<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+									<button type="button" 
+											class="close" 
+											data-dismiss="modal">&times;</button>
+									<h4 id="avgcalc"
+										class="modal-title"></h4>
+									</div>
+									<div class="modal-body">
+										<p id="avgincmodal_body">
+											<!-- This is created by avgcalc.js -->
+										</p>			  
+										<br>
+								  
+										<div class="panel-group" 
+											 id="accordion" 
+											 role="tablist" 
+											 aria-multiselectable="true">
+											<div class="panel panel-default">
+												<div class="panel-heading" 
+													 role="tab" 
+													 id="headingTotals">
+												<h4 class="panel-title">
+												<a role="button" 
+												   data-toggle="collapse" 
+												   data-parent="#accordion" 
+												   href="#collapseTotals" 
+												   aria-expanded="true" 
+												   aria-controls="collapseTotals">Totals:</a>
+												</h4>
+												</div>
+												<div id="collapseTotals" 
+													 class="panel-collapse collapse" 
+													 role="tabpanel" 
+													 aria-labelledby="headingTotals">
+													<div class="totals_panel_body">
+														<!-- This is created by avgcalc.js -->
+													</div>
+												</div>
+											</div>
+										</div>
+								  
+									</div>
+									<div class="modal-footer">
+										<div class="btn-group btn-group-justified">
+											<a href="#"
+											   id="btn_close_avgcalc"
+											   class="btn btn-default bcbtn" 
+											   data-dismiss="modal"
+											   onclick="">Close</a>
+										</div>
+										<br>
+										<div class="btn-group btn-group-justified">
+											<a href="#" 
+											   class="btn btn-success bcbtn"
+											   data-toggle="collapse" 
+											   data-target="#demo"											   
+											   onclick="">Help</a>											   
+										</div>
+										<div id="demo" class="collapse">
+											<!-- Begin Dan B's html for the help file.  (Slightly modified.)-->	
+											<br>
+											<h4 class="instrux_header">Tips for using the Average Gross Monthly Income Calculator:</h4>											
+											<div class="instrux">
+												<h5>To Calculate the Average Monthly Income:</h5>
+													<ol>
+														<li>Enter the gross income for each check/payment the debtor received. <span class="note">(Note that if
+														the debtor received the same gross for several checks, you can use the <strong>Copy Amount
+														Down</strong> button to fill all remaining blank fields with the last amount entered.)</span>
+														</li>
+														<li>Click <strong>Calculate Average Monthly Income</strong>. </li>
+														<li>In the Totals section, the calculator displays the 6-month Gross Income, and the
+														Avgerage Monthly Income for a six-month period&nbsp; (Gross / 6).</li>
+														<li><strong>Options:</strong>
+															<ul>
+																<li><span style="text-decoration: underline">Add to Total</span>: Allows you to start a new set of Calculations but carries over the
+																6-Month Gross Income as the starting amount for the new calculation.
+																</li>
+																<li><span style="text-decoration: underline">Send to Quick CMI Calculator</span>:
+																Takes the Avg. Monthly Income amount and sends it back to the Quick CMI Calculator.
+																</li>
+															</ul>
+														</li>
+													</ol>
+												<h5>To Change the Number of Check Fields:</h5>
+													<ol>
+														<li>Enter the new number of Checks in the space provided. (Number must be between 1 and 26.)</li>
+														<li>Press tab or enter on your keyboard, or click in the "Check 1." text field to update the page.</li>   
+													</ol>
+											</div><!--end Dan B's html for the help file.-->
+										</div>
+									</div>
+								</div>		  
+							</div>
+						</div>
+						<br>	  
+						<div class="btn-group btn-group-justified">
+							<a href="#" 
+							   class="btn btn-primary"
+							   onclick="CMI_CALCULATOR.do_compare();">Compare</a>		
+							<a href="#" 
+							   class="btn btn-primary"
+							   onclick="CMI_CALCULATOR.reset();">Reset</a>
+						</div>
+					</div>
+				</form>
+				<br>  
+				<div class="panel-group" 
+					 id="accordion" 
+					 role="tablist" 
+					 aria-multiselectable="true">
+					<div class="panel panel-default">
+						<div class="panel-heading" 
+							 role="tab" 
+							 id="headingResults">
+							<h4 class="panel-title">
+								<a role="button" 
+								   data-toggle="collapse" 
+								   data-parent="#accordion" 
+								   href="#collapseResults" 
+								   aria-expanded="true" 
+								   aria-controls="collapseResults">Results</a>
+							</h4>
+						</div>
+						<div id="collapseResults" 
+						     class="panel-collapse collapse" 
+							 role="tabpanel" 
+							 aria-labelledby="headingResults">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-sm-8">
+										<label for="results" 
+											   class="label_one"></label>
+									</div>
+									<div class="col-sm-4">
+										<label class="label_two" 
+											   id="house_size">People</label>
+									</div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-sm-8">
+										<label id="lbl_state_med_inc" 
+											   class="label_one">Median Income</label>
+									</div>
+									<div class="col-sm-4">
+										<label class="label_two" 
+											   id="state_med_inc_val">$0</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-8">
+										<label for="lbl_gross_median_inc" 
+											   class="label_one">Debtor Gross Yearly Income (Pre-Tax)</label>
+									</div>
+									<div class="col-sm-4">
+										<label class="label_two" 
+											   id="gross_yearly_inc">$0</label>
+									</div>									
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-sm-8">
+										<label for="lbl_under_over" 
+											   style="color: green;"
+											   class="label_two"
+											   id="lbl_cmi_result">Under Median</label>
+									</div>
+									<div class="col-sm-4">
+										<label class="label_two" 
+											   style="color:green;"
+											   id="cmi_result">$0</label>
+									</div>									
+								</div>
+							</div>
+						</div>
+				  </div>
+				</div>
+				<div class="panel-group" 
+					 id="accordion" 
+					 role="tablist" 
+					 aria-multiselectable="true">
+					<div class="panel panel-default">
+						<div class="panel-heading" 
+							 role="tab" 
+							 id="headingOne">
+							<h4 class="panel-title">
+								<a role="button" 
+								   data-toggle="collapse" 
+								   data-parent="#accordion" 
+								   href="#collapseInstrux" 
+								   aria-expanded="true" 
+								   aria-controls="collapseInstrux">View Instructions</a>
+							</h4>
+						</div>
+						<div id="collapseInstrux" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+							<div class="panel-body">
+								<ol>
+									<li>Choose the state in which the debtor(s) reside(s).</li>
+									<li>Enter the number of people in the household.</li>
+									<li>Enter in the Average Gross Monthly Income (Pre-Tax) for the prior six (6) months for the debtor(s).</li>
+									<li>Click "Compare" to see whether the debtor's income falls below or above the selected state's median income amount for the household size you entered.</li>
+									<li>The results section will display the state's Median Income Amount for the household size you entered, the debtor's Gross Yearly Income (Pre-Tax) and the difference between the two.</li>
+								</ol>
+							</div>
+						</div>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<!--
+		<div class="gridbox gridright">
+			<div class="right">
+				<h2>Right panel here:</h2>
+			</div>
+		</div>
+		-->
+		<!--
+			<div class="gridbox gridfooter">
+				<div class="footer">
+					<p>Footer here</p>
+				</div>
+			</div>
+			-->
+		</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="js/median_income.js"></script>
+<script src="js/cmicalc.js"></script>
+<script src="js/avgcalc.js"></script>
+<script>
+	$(document).ready(function(){ 
+		$("body").tooltip({selector:'[data-show=tip]'});
+		$('#avgcalc').html(AVG_CALCULATOR.window_title);
+	});
+</script>
+
+</body>
+</html>
