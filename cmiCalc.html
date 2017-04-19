@@ -15,9 +15,7 @@
 	<link rel="stylesheet" 
 		  href="css/styles.css?v=1.0">
 
-	<!--[if lt IE 9]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
+
 </head>
 
 <body>
@@ -213,7 +211,7 @@
 											   onclick="">Help</a>											   
 										</div>
 										<div id="demo" class="collapse">
-											<!-- Begin Dan B's html for the help file.  (Slightly modified.)-->	
+											<!-- Begin html for the help file.-->	
 											<br>
 											<h4 class="instrux_header">Tips for using the Average Gross Monthly Income Calculator:</h4>											
 											<div class="instrux">
@@ -242,7 +240,7 @@
 														<li>Enter the new number of Checks in the space provided. (Number must be between 1 and 26.)</li>
 														<li>Press tab or enter on your keyboard, or click in the "Check 1." text field to update the page.</li>   
 													</ol>
-											</div><!--end Dan B's html for the help file.-->
+											</div><!--End html for the help file.-->
 										</div>
 									</div>
 								</div>		  
@@ -380,16 +378,34 @@
 		</div>
 </div>
 
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!--[if !IE]> -->
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- <![endif]-->
+<!--[if IE]>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.5/clipboard.min.js"></script>
+<!--Import JS modules-->
 <script src="js/median_income.js"></script>
 <script src="js/cmicalc.js"></script>
 <script src="js/avgcalc.js"></script>
+<script src="js/browser_info.js"></script>
 <script>
 	$(document).ready(function(){ 
 		$("body").tooltip({selector:'[data-show=tip]'});
 		$('#avgcalc').html(AVG_CALCULATOR.window_title);
+		
+		// If we aren't using IE8 then use clipboard.js.
+		var isIE8 = BROWSER_INFO.isIE8();		
+		if (!isIE8) {
+			new Clipboard('.btncopy');
+		}
 	});
 </script>
 

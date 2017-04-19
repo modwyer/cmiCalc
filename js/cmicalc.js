@@ -1,3 +1,7 @@
+/**
+ * This module contains the logic to do the current monthly income calculation
+ * and present the results to the user.  It interacts mainly with cmiCalc.html.
+ */
 var CMI_CALCULATOR = (function() {
 	var cc = {};
 	var m_data = "";
@@ -28,11 +32,17 @@ var CMI_CALCULATOR = (function() {
 		var lines = m_data.split("\n");
 		
 		// Read and store in map, the median_income data.
-		lines.forEach(function (item, index, array) {
+		jQuery.each(lines, function (index, item) {
 			var line = item.split(",");
-			m_data_map[line[0].trim()] = new Array( line[1], line[2], line[3], line[4]);			
+			var key = line[0].replace(/^\s+|\s+$/g, ''); // IE friendly trim()
+			
+			m_data_map[key] = new Array( line[1], line[2], line[3], line[4]);			
 		});
 	}());
+		
+	//
+	//PUBLIC
+	//	
 		
 	cc.state_onchange = function(el) {
 		m_state = $(el).val();		
@@ -74,10 +84,10 @@ var CMI_CALCULATOR = (function() {
 		var val_db = $('#' + m_debtor_inc_id + '').val();
 		var val_jdb = $('#' + m_joint_inc_id + '').val();
 
-		if (val_db < 1 && val_jdb < 1) {
+		/* if (val_db < 0 && val_jdb < 0) {
 			alert("Please enter in Debtor(s) income");
 			return;
-		}
+		} */
 		
 		if (val_db.length > 0) {
 			m_debtor_inc = val_db;
@@ -130,9 +140,11 @@ var CMI_CALCULATOR = (function() {
 		if (result > 0) {
 			$('#' + m_cmi_result_id + '').css('color', 'green');
 			$('#' + m_lbl_cmi_result_id + '').css('color', 'green');
+			$('#' + m_lbl_cmi_result_id + '').html("Under Median");
 		} else {
 			$('#' + m_cmi_result_id + '').css('color', 'red');
 			$('#' + m_lbl_cmi_result_id + '').css('color', 'red');
+			$('#' + m_lbl_cmi_result_id + '').html("Over Median");
 		}
 		
 		// Set the result.
@@ -160,6 +172,7 @@ var CMI_CALCULATOR = (function() {
 		// Reset the CMI Result.			
 		$('#' + m_cmi_result_id + '').css('color', 'green');
 		$('#' + m_lbl_cmi_result_id + '').css('color', 'green');
+		$('#' + m_lbl_cmi_result_id + '').html("Under Median");
 		$('#' + m_cmi_result_id + '').html("$0");
 		// Hide the Result and Instructions.
 		$('#' + m_results_accordion_id + '').collapse("hide");

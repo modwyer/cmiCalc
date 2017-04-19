@@ -1,3 +1,6 @@
+/**
+ * This is enum-like and used to specify the debtor type.
+ */
 var FILERENUM = (function() {
 	var filerenum = {};
 	
@@ -7,6 +10,12 @@ var FILERENUM = (function() {
 	return filerenum;
 }());
 
+/**
+ * This module creates portions of a modal window that is an average income
+ * calculator.  It performs the calculation based on user input and displays
+ * the results to the user.  The average income value can be sent to fields
+ * on the cmiCalc.html page.
+ */
 var AVG_CALCULATOR = (function() {
 	var ac = {};
 	var m_for_who_id_prefix = "grossInc_";
@@ -22,6 +31,7 @@ var AVG_CALCULATOR = (function() {
 	var m_last_entered_total = 0;
 	var m_index_last_total = 0;
 	var m_id_last_total = "";
+	// IDs
 	var m_total_checks_id = "total_checks";
 	var m_avgincmodal_body_id = "avgincmodal_body";
 	var m_gross_inc_amt_id = "gross_inc_amt";
@@ -34,6 +44,10 @@ var AVG_CALCULATOR = (function() {
 		// Create the first 13 check inputs and store them.
 		m_check_inputs = create_check_inputs(m_num_check_inputs);
 	}());
+	
+	//
+	//PRIVATE
+	//
 	
 	/**
      * Create 'count' number of 'input' nodes for
@@ -64,10 +78,12 @@ var AVG_CALCULATOR = (function() {
 		var ret = "<form class=\"form-horizontal\" role=\"form\">"; 
 		ret += "<div class=\"form-group-sm row\">";
 		ret += "<div class=\"input-append\">";
-		ret += "<label for=\"total_checks\" class=\"col-sm-2 form-control-label label_three\">Total checks? (1-26)</label>";
-		ret += "<div class=\"controls col-sm-10\">";
+		ret += "<label for=\"total_checks\" class=\"col-sm-4 form-control-label label_three\">Total checks? (1-26)</label>";
+		//ret += "<label for=\"total_checks\" class=\"form-control-label label_three\">Total checks? (1-26)</label>";
+		ret += "<div class=\"controls col-sm-8\">";
 		ret += "<input type=\"number\" class=\"form-control\" id=\"total_checks\" min=\"1\" max=\"26\"  placeholder=\"Arrow Key Up and Down to change\"  onchange=\"AVG_CALCULATOR.set_total_check_inputs(this);\" />";
 		ret += "</div></div></div>"; 
+		//ret += "</div></div>";
 		ret += "</form>";
 				
 		ret += "<form class=\"form-inline\" role=\"form\">" +
@@ -94,9 +110,48 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Create the totals section html for all browser that are
+	 * not IE8.
 	 */
-	function create_totals_section() {
+	function create_totals_section_not4_ie8() {
+		var ret = "<br><div class=\"container-fluid\">";
+		ret += "<div class=\"row\">" +
+		"<div class=\"col-sm-6\">" +
+		"<label for=\"starting_amt\" class=\"label_one\">6-month Gross Income:</label>" +
+		"</div>" +
+		"<div class=\"col-sm-4\">" +
+		"<label class=\"label_two\" id=\"gross_inc_amt\">$0</label>" +
+		"</div>" +
+		"</div>" +
+		"<div class=\"row\">" +
+		"<div class=\"col-sm-6\">" +
+		"<label for=\"starting_amt\" class=\"label_one\" style=\"padding-top:5px;\">Average Monthly Income:</label>" +
+		"</div>" +
+		"<div class=\"col-sm-4\">" +
+		"<input type=\"text\" id=\"avg_monthly_inc\" class=\"avg_income_text\" value=\"0.00\" data-show=\"tip\" title=\"Select the total and press CTRL+C on your keyboard to copy to the clipboard.\" \">" +
+		"</div>" +
+		"<div class=\"row\">" +
+		"<div class=\"col-sm-4\"></div>" +
+		"<div class=\"col-sm-4\">" +
+		"<div class=\"form-group\">" +
+		"<button type=\"button\" class=\"btn-xs btn-link btncopy\" data-clipboard-target=\"#avg_monthly_inc\" data-show=\"tip\" title=\"Copy Average Income to Clipboard. This link will work in the following browsers: 'Chrome 42+, Firefox 41+, IE 9+, Opera 29+, Safari X'.  Use CTRL+C to copy for other browsers.\" \">Copy Avg To Clipboard</button>" +
+		"</div>" +
+		"</div>" +
+		"</div>" +
+		"</div>" +
+		"</div>" +
+		"<br>" +
+		"<div class=\"btn-group btn-group-justified\">" + 
+		"<a href=\"#\" id=\"addtototal\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.btn_add_to_total_click();\">Add to Total</a>" + 
+		"<a href=\"#\" id=\"sendtocmi\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.write_total_back();\">Send to Quick CMI Calculator</a>" +
+		"</div>";
+		return ret;
+	}
+	
+	/**
+	 * Create the totals section html for IE8.  
+	 */
+	function create_totals_section_4_ie8() {
 		var ret = "<div class=\"container-fluid\">";
 		ret += "<div class=\"row\">" +
 		"<div class=\"col-sm-6\">" +
@@ -111,15 +166,33 @@ var AVG_CALCULATOR = (function() {
 		"<label for=\"starting_amt\" class=\"label_one\">Average Monthly Income:</label>" +
 		"</div>" +
 		"<div class=\"col-sm-4\">" +
-		"<input type=\"text\" id=\"avg_monthly_inc\" style=\"margin-right: 15px;\">" +
+		"<input type=\"number\" id=\"avg_monthly_inc\" class=\"avg_income_text\" value=\"0.00\" data-show=\"tip\" title=\"Select the total and press CTRL+C on your keyboard to copy to the clipboard.\" \">" +
+		"</div>" +		
 		"</div>" +
-		"</div>" +
-		"</div>" +
-		"<br>" +
+		"<div class=\"row\">" +
+		"<br><br>" +
 		"<div class=\"btn-group btn-group-justified\">" + 
-		"<a href=\"#\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.btn_add_to_total_click();\">Add to Total</a>" +
-		"<a href=\"#\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.write_total_back();\">Send to Quick CMI Calculator</a>" +
+		"<a href=\"#\" id=\"addtototal\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.btn_add_to_total_click();\">Add to Total</a>" + 
+		"<a href=\"#\" id=\"sendtocmi\" class=\"btn btn-info bcbtn\" onclick=\"AVG_CALCULATOR.write_total_back();\">Send to Quick CMI Calculator</a>" +
+		"</div>" +
+		"</div>" +
+		
 		"</div>";
+		
+		return ret;
+	}
+	
+	/**
+	 * Creates the html for the 'totals' section of the modal.
+	 */
+	function create_totals_section() {
+		var ret = "";
+		var isIE8 = BROWSER_INFO.isIE8();
+		if (isIE8) {
+			ret = create_totals_section_4_ie8();
+		} else {
+			ret = create_totals_section_not4_ie8();
+		}
 		
 		$('.' + m_modal_panel_body_id + '').html(ret);
 		
@@ -127,14 +200,12 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Creates the bottom portion of the average calculator.
+	 * This section is below the check inputs and above the totals section.
 	 */
-	function create_bottom_section() {
-		/* var ret = "<form class=\"form-horizontal\" role=\"form\">";
-		ret += "</form>"; */
-		
+	function create_bottom_section() {		
 		var ret = "<br><div class=\"btn-group btn-group-justified\">" +
-		"<a href=\"#\" class=\"btn btn-primary bcbtn\" onclick=\"AVG_CALCULATOR.compute_average();\">Calculate Avgerage Monthly Income</a>" +
+		"<a href=\"#\" class=\"btn btn-primary bcbtn\" onclick=\"AVG_CALCULATOR.compute_average();\">Calculate Average Monthly Income</a>" +
 		"</div>";
 		
 		return ret;
@@ -146,18 +217,20 @@ var AVG_CALCULATOR = (function() {
 	 */
 	function get_inputs_for_display() {
 		var ret = "<form class=\"form-horizontal\" role=\"form\">";
-		m_check_inputs.forEach(function (item, index, array) {
+		
+		jQuery.each(m_check_inputs, function (index, item) {
 			ret += "<div class=\"form-group-sm row\">";
 			ret += item;
 			ret += "</div>";
 		});
+		
 		ret += "</form>";
 				
 		return ret;
 	}
 	
 	/**
-	 * 
+	 * Set the value for the starting gross amount used in the calculation.
 	 */
 	function set_starting_gross_amt(amount) {
 		m_starting_gross_amt = amount;
@@ -165,7 +238,7 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Set the starting average amount used in the calculation.
 	 */
 	function set_starting_averge_amt(amount) {
 		m_starting_average = amount;
@@ -173,7 +246,7 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Clear the totals section and hide it.
 	 */
 	function reset_totals_section() {
 		$('#' + m_gross_inc_amt_id + '').html("$0");
@@ -182,40 +255,45 @@ var AVG_CALCULATOR = (function() {
 		hide_totals_section();
 	}
 	
+	/**
+	 * Collapse the totals section.
+	 */
 	function hide_totals_section() {
-		// Hide the Totals section
 		$('#' + m_totals_accordion_id + '').collapse("hide");
 	}
 	
 	/**
-	 * 
+	 * Retrieve the values entered by the user in the check inputs
+	 * and store them.
 	 */
 	function get_inputs_values() {
-		m_check_inputs_values = {}; // Reset and refill.
-		m_check_inputs_ids.forEach(function (item, index, array) {
+		m_check_inputs_values = {}; 
+				
+		jQuery.each(m_check_inputs_ids, function (index, item) {
 			m_check_inputs_values[item] = $('#' + item + '').val();
 		});
 	}	
 	
 	/**
-	 * 
+	 * Clear all the values entered in the check inputs.
 	 */
-	function reset_check_inputs() {
-		m_check_inputs_ids.forEach(function (item, index, array) {
+	function reset_check_inputs() {	
+		jQuery.each(m_check_inputs_ids, function (index, item) {
 			$('#' + item + '').val("");
-		});
+		});	
 	}
 	
 	/**
-	 * Return the array items as a string
-	 * separated by 'sep'.
+	 * Return the array items as a string separated by 'sep'.
 	 */
 	function join(arr, sep) {
 		var ret = "";
-		arr.forEach(function (item, index, array) {
-		  ret += item;
-		  ret += sep;
+		
+		jQuery.each(arr, function (index, item) {
+			ret += item;
+			ret += sep;
 		});
+		
 		return ret;
 	}	
 	
@@ -277,7 +355,10 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Write the total in the average income field back to the 
+	 * Quick CMI Calculator page.
+	 * Depending on 'for_who' the average calculator was clicked
+	 * for, that debtor will get the total.
 	 */
 	ac.write_total_back = function() {
 		var id = m_for_who_id_prefix + '' + m_for_who;
@@ -289,7 +370,7 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Clears out any starting totals and the totals section.
 	 */
 	ac.clear_starting_totals = function() {
 		set_starting_averge_amt(0);
@@ -300,7 +381,7 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Copy down the last entered amount in one of the check total inputs.
 	 */
 	ac.copy_amount_down = function() {
 		var ind = m_index_last_total - 1;
@@ -323,7 +404,8 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Computes the average income based on the info entered by the user.
+	 * Fills in the computed values to display totals to the user.
 	 */
 	ac.compute_average = function() {
 		// To make the UI clear, I write the gross as a string starting 
@@ -356,7 +438,8 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Click event for adding the calculated total to the starting
+	 * values so they can be used in a future calculation.
 	 */
 	ac.btn_add_to_total_click = function() {
 		set_starting_gross_amt($('#' + m_gross_inc_amt_id + '').html());
@@ -366,25 +449,13 @@ var AVG_CALCULATOR = (function() {
 	}
 	
 	/**
-	 * 
+	 * Reset the entire screen to start over.
 	 */
 	ac.reset_screen = function() {
 		m_num_check_inputs = m_DEFAULT_INPUT_NUM;
 		reset_check_inputs();	// Clear all check input values.		
 		reset_totals_section();	// Collapse the Totals section.
 		
-	}
-	
-	/**
-	 * 
-	 */
-	ac.btn_help_click = function() {
-		/* var windowObjectReference;
-		var strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
-		windowObjectReference = window.open("http://www.cnn.com/", "CNN_WindowName", strWindowFeatures); */
-		var w = window.open();
-		var html = "<!doctype html><html lang=\"en\"></html>";
-		$(w.document.html).html('<object type="text/html" data="cmiCalc_help.html" ></object>');
 	}
 	
 	return ac;
