@@ -3,7 +3,7 @@
  * This information comes from this website:
  *	http://www.justice.gov/ust/means-testing
  * Get the XLS or XLSx file of the current media income info, 
- * convert it to CSV, and then remove all the the none essential 
+ * convert it to CSV, and then remove all the the non-essential 
  * rows and formatting.  Once you have the states' info saved in 
  * the header-less CSV format, add '\n\' to the end of each row except
  * for the last row. Then copy all the rows and replace the ones below.
